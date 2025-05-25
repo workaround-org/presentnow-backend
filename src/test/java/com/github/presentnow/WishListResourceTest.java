@@ -29,7 +29,6 @@ class WishListResourceTest
 	private static WishList getWishList()
 	{
 		WishList myList = new WishList();
-		myList.setId(1L);
 		myList.setName("Test List");
 		myList.setDescription("Nothing special here!");
 		return myList;

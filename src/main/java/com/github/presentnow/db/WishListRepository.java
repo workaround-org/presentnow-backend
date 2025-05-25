@@ -10,8 +10,8 @@ import java.util.List;
 public class WishListRepository implements PanacheRepository<WishList>
 {
 
-	public List<WishList> getActive()
+	public List<WishList> getActive(String username)
 	{
-		return find("active", true).list();
+		return find("active = ?1 and username = ?2", true, username).list();
 	}
 }

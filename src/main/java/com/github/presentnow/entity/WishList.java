@@ -3,6 +3,9 @@ package com.github.presentnow.entity;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import java.util.List;
 
 @Entity
 public class WishList
@@ -10,16 +13,12 @@ public class WishList
 	@Id
 	@GeneratedValue
 	private Long id;
-
-	//@OneToMany
-	//private List<PresentIdea> presentIdeas;
-
 	private String name;
-
 	private String description;
-
+	private String username;
 	private Boolean active;
-
+	@OneToMany(mappedBy = "listId")
+	private List<PresentIdea> presentIdeas;
 	// ToDo: Add cron job to deactivate expired WishLists
 	private Long expires;
 
@@ -71,5 +70,25 @@ public class WishList
 	public void setExpires(Long expires)
 	{
 		this.expires = expires;
+	}
+
+	public String getUsername()
+	{
+		return username;
+	}
+
+	public void setUsername(String username)
+	{
+		this.username = username;
+	}
+
+	public List<PresentIdea> getPresentIdeas()
+	{
+		return presentIdeas;
+	}
+
+	public void setPresentIdeas(List<PresentIdea> presentIdeas)
+	{
+		this.presentIdeas = presentIdeas;
 	}
 }

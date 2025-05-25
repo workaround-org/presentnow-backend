@@ -6,8 +6,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.List;
 
@@ -16,7 +14,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class WishListResource
 {
-	private static final Logger LOGGER = LoggerFactory.getLogger(WishListResource.class);
+	private final String DUMMY_USER = "dummyUser";
 
 	@Inject
 	WishListRepository wishListRepository;
@@ -25,18 +23,17 @@ public class WishListResource
 	public List<WishList> getListsForUser()
 	{
 		// ToDo: Add Auth
-		return wishListRepository.getActive();
+		return wishListRepository.getActive(DUMMY_USER);
 	}
 
 	@POST
 	@Transactional
-	public void saveList(WishList list)
+	public WishList saveList(WishList list)
 	{
-		LOGGER.info("Is persisted? {}", wishListRepository.isPersistent(list));
-		WishList myList = new WishList();
-		myList.setId(list.getId());
-		myList.setName(list.getName());
-		myList.setDescription(list.getDescription());
-		wishListRepository.persist(myList);
+		list.setUsername(DUMMY_USER);
+		list.setActive(true);
+		list.setId(null);
+		wishListRepository.persist(list);
+		return list;
 	}
 }
