@@ -1,85 +1,66 @@
-# backend
+# PresentNow Backend
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+**PresentNow** is an open-source backend REST API (built with Java + Quarkus) for a web application that helps people collaboratively organize and manage gift-giving for occasions like birthdays.
 
-If you want to learn more about Quarkus, please visit its website: <https://quarkus.io/>.
+## Project Idea
 
-## Running the application in dev mode
+Finding the right present for someone can be challenging. PresentNow aims to make gift-giving easier for everyone involved:
 
-You can run your application in dev mode that enables live coding using:
+- **Person A (Recipient)** creates or shares a wish list of presents.
+- **Friends of A** can view the list, choose what they want to buy, and reserve presents to avoid duplicates.
+- Friends can see who is buying which present, but Person A cannot see who is buying what—preserving the surprise!
 
-```shell script
-./mvnw quarkus:dev
-```
+## Features
 
-> **_NOTE:_**  Quarkus now ships with a Dev UI, which is available in dev mode only at <http://localhost:8080/q/dev/>.
+- REST API built on [Quarkus](https://quarkus.io/) (Java)
+- User and present management
+- Present suggestion and reservation system
+- Privacy: Only friends see who is buying which present; the recipient cannot
+- Designed for easy integration with frontend clients
 
-## Packaging and running the application
+## Tech Stack
 
-The application can be packaged using:
+- **Backend:** Java 17+, Quarkus
+- **Frontend:** [Vue.js](https://vuejs.org/) (in a separate repository)
+- **Database:** Postgres
+- **API:** RESTful endpoints
 
-```shell script
-./mvnw package
-```
+## Getting Started
 
-It produces the `quarkus-run.jar` file in the `target/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `target/quarkus-app/lib/` directory.
+### Prerequisites
 
-The application is now runnable using `java -jar target/quarkus-app/quarkus-run.jar`.
+- Java 17+ installed
+- [Maven](https://maven.apache.org/) installed
 
-If you want to build an _über-jar_, execute the following command:
+### Running Locally
 
-```shell script
-./mvnw package -Dquarkus.package.jar.type=uber-jar
-```
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/vvilip/presentnow-backend.git
+    cd presentnow-backend
+    ```
+2. Start the Quarkus development server:
+    ```bash
+    ./mvnw quarkus:dev
+    ```
+3. The API will be available at `http://localhost:8080`.
 
-The application, packaged as an _über-jar_, is now runnable using `java -jar target/*-runner.jar`.
+### API Documentation
 
-## Creating a native executable
+- (Add OpenAPI/Swagger details here if available)
 
-You can create a native executable using:
+## Frontend
 
-```shell script
-./mvnw package -Dnative
-```
+A Vue.js frontend for PresentNow is developed and maintained in a separate repository.  
+This backend is designed to work seamlessly with the Vue.js frontend.
 
-Or, if you don't have GraalVM installed, you can run the native executable build in a container using:
+- [PresentNow Frontend (Vue.js)](https://github.com/YOUR_ORG_OR_USERNAME/presentnow-frontend)  
+  *(replace with actual link when available)*
 
-```shell script
-./mvnw package -Dnative -Dquarkus.native.container-build=true
-```
+## Contributing
 
-You can then execute your native executable with: `./target/backend-1.0-SNAPSHOT-runner`
+Contributions are welcome! Please open an issue or submit a pull request.
 
-If you want to learn more about building native executables, please consult <https://quarkus.io/guides/maven-tooling>.
+## License
 
-## Related Guides
-
-- REST ([guide](https://quarkus.io/guides/rest)): A Jakarta REST implementation utilizing build time processing and
-  Vert.x. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on
-  it.
-- SmallRye OpenAPI ([guide](https://quarkus.io/guides/openapi-swaggerui)): Document your REST APIs with OpenAPI - comes
-  with Swagger UI
-- REST Jackson ([guide](https://quarkus.io/guides/rest#json-serialisation)): Jackson serialization support for Quarkus
-  REST. This extension is not compatible with the quarkus-resteasy extension, or any of the extensions that depend on it
-- OpenID Connect ([guide](https://quarkus.io/guides/security-openid-connect)): Verify Bearer access tokens and
-  authenticate users with Authorization Code Flow
-- Hibernate ORM with Panache ([guide](https://quarkus.io/guides/hibernate-orm-panache)): Simplify your persistence code
-  for Hibernate ORM via the active record or the repository pattern
-- JDBC Driver - PostgreSQL ([guide](https://quarkus.io/guides/datasource)): Connect to the PostgreSQL database via JDBC
-
-## Provided Code
-
-### Hibernate ORM
-
-Create your first JPA entity
-
-[Related guide section...](https://quarkus.io/guides/hibernate-orm)
-
-[Related Hibernate with Panache section...](https://quarkus.io/guides/hibernate-orm-panache)
-
-### REST
-
-Easily start your REST Web Services
-
-[Related guide section...](https://quarkus.io/guides/getting-started-reactive#reactive-jax-rs-resources)
+This project is [FOSS](https://en.wikipedia.org/wiki/Free_and_open-source_software). See [LICENSE](./LICENSE) for details.
