@@ -1,6 +1,7 @@
 package com.github.presentnow;
 
 import com.github.presentnow.db.WishListRepository;
+import com.github.presentnow.entity.ActiveWishList;
 import com.github.presentnow.entity.WishList;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -20,10 +21,19 @@ public class WishListResource
 	WishListRepository wishListRepository;
 
 	@GET
-	public List<WishList> getListsForUser()
+	public List<ActiveWishList> getListsForUser()
 	{
 		// ToDo: Add Auth
-		return wishListRepository.getActive(DUMMY_USER);
+		return wishListRepository.getActive(DUMMY_USER).stream()
+			.map(ActiveWishList::new)
+			.toList();
+	}
+
+	@GET
+	@Path("{id}")
+	public WishList getListById(@PathParam("id") Long id)
+	{
+		return wishListRepository.findById(id);
 	}
 
 	@POST
