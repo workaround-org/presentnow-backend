@@ -13,6 +13,9 @@ import static org.hamcrest.Matchers.is;
 @TestHTTPEndpoint(WishListResource.class)
 class WishListResourceTest
 {
+	public static final int NEXT_ENTITY_ID = 3;
+	public static final int ENTITIES_IN_DB = 3;
+
 	@Test
 	void testCreateWishList()
 	{
@@ -25,7 +28,7 @@ class WishListResourceTest
 			.post()
 			.then()
 			.statusCode(200)
-			.body("id", is(3));
+			.body("id", is(NEXT_ENTITY_ID));
 	}
 
 	@Test
@@ -36,7 +39,7 @@ class WishListResourceTest
 			.get()
 			.then()
 			.statusCode(200)
-			.body("size()", is(3));
+			.body("size()", is(ENTITIES_IN_DB));
 	}
 
 	@Test
