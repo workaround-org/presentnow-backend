@@ -8,8 +8,6 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
-import java.util.List;
-
 @Path("present")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,12 +18,6 @@ public class PresentResource
 
 	@Inject
 	WishListRepository wishListRepository;
-
-	@GET
-	public List<PresentIdea> getPresentIdeasByList(@QueryParam("list-id") Long listId)
-	{
-		return presentIdeaRepository.list("listId", listId);
-	}
 
 	@POST
 	@Transactional
@@ -39,5 +31,12 @@ public class PresentResource
 		idea.setId(null);
 		presentIdeaRepository.persist(idea);
 		return idea;
+	}
+
+	@GET
+	@Path("{id}")
+	public PresentIdea getPresentByList(@PathParam("id") Long id)
+	{
+		return presentIdeaRepository.findById(id);
 	}
 }

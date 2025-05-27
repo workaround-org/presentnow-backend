@@ -15,7 +15,7 @@ import java.util.List;
 @Consumes(MediaType.APPLICATION_JSON)
 public class WishListResource
 {
-	private final String DUMMY_USER = "dummyUser";
+	public static final String DUMMY_USER = "dummyUser";
 
 	@Inject
 	WishListRepository wishListRepository;
@@ -23,17 +23,10 @@ public class WishListResource
 	@GET
 	public List<ActiveWishList> getListsForUser()
 	{
-		// ToDo: Add Auth
+		// ToDo: Add Auth via Mail
 		return wishListRepository.getActive(DUMMY_USER).stream()
 			.map(ActiveWishList::new)
 			.toList();
-	}
-
-	@GET
-	@Path("{id}")
-	public WishList getListById(@PathParam("id") Long id)
-	{
-		return wishListRepository.findById(id);
 	}
 
 	@POST
@@ -45,5 +38,12 @@ public class WishListResource
 		list.setId(null);
 		wishListRepository.persist(list);
 		return list;
+	}
+
+	@GET
+	@Path("{id}")
+	public WishList getListById(@PathParam("id") Long id)
+	{
+		return wishListRepository.findById(id);
 	}
 }
