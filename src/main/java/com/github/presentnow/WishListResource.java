@@ -9,6 +9,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.List;
+import java.util.UUID;
 
 @Path("/lists")
 @Produces(MediaType.APPLICATION_JSON)
@@ -35,7 +36,7 @@ public class WishListResource
 	{
 		list.setUsername(DUMMY_USER);
 		list.setActive(true);
-		list.setId(null);
+		list.setId(UUID.randomUUID());
 		wishListRepository.persist(list);
 		return list;
 	}

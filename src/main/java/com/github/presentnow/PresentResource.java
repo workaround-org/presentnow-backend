@@ -8,6 +8,8 @@ import jakarta.transaction.Transactional;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
+import java.util.UUID;
+
 @Path("present")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -28,7 +30,7 @@ public class PresentResource
 		{
 			throw new NotFoundException("List not found");
 		}
-		idea.setId(null);
+		idea.setId(UUID.randomUUID());
 		presentIdeaRepository.persist(idea);
 		return idea;
 	}

@@ -1,27 +1,27 @@
 package com.github.presentnow.entity;
 
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+
+import java.util.UUID;
 
 @Entity
 public class PresentIdea
 {
 	@Id
-	@GeneratedValue
-	private Long id;
+	private UUID id;
 	private Long listId;
 	private String name;
 	private String url;
 	private String description;
 	private int importance;
 
-	public Long getId()
+	public UUID getId()
 	{
 		return id;
 	}
 
-	public void setId(Long id)
+	public void setId(UUID id)
 	{
 		this.id = id;
 	}

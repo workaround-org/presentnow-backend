@@ -1,10 +1,12 @@
 package com.github.presentnow.entity;
 
+import java.util.UUID;
+
 public class ActiveWishList
 {
-	private Long id;
-	private String name;
-	private String description;
+	private final UUID id;
+	private final String name;
+	private final String description;
 
 	public ActiveWishList(WishList wishList)
 	{
@@ -13,7 +15,7 @@ public class ActiveWishList
 		this.description = wishList.getDescription();
 	}
 
-	public Long getId()
+	public UUID getId()
 	{
 		return id;
 	}
