@@ -10,7 +10,7 @@ public class PresentIdea
 {
 	@Id
 	private UUID id;
-	private Long listId;
+	private UUID listId;
 	private String name;
 	private String url;
 	private String description;
@@ -26,12 +26,12 @@ public class PresentIdea
 		this.id = id;
 	}
 
-	public Long getListId()
+	public UUID getListId()
 	{
 		return listId;
 	}
 
-	public void setListId(Long listId)
+	public void setListId(UUID listId)
 	{
 		this.listId = listId;
 	}

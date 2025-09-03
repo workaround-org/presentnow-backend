@@ -43,8 +43,8 @@ public class WishListResource
 
 	@GET
 	@Path("{id}")
-	public WishList getListById(@PathParam("id") Long id)
+	public WishList getListById(@PathParam("id") UUID id)
 	{
-		return wishListRepository.findById(id);
+		return wishListRepository.find("id", id).firstResult();
 	}
 }

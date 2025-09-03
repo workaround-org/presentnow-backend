@@ -25,7 +25,7 @@ public class PresentResource
 	@Transactional
 	public PresentIdea savePresentIdea(PresentIdea idea)
 	{
-		boolean isValidWishList = wishListRepository.findById(idea.getListId()) == null;
+		boolean isValidWishList = wishListRepository.find("id", idea.getListId()) == null;
 		if (isValidWishList)
 		{
 			throw new NotFoundException("List not found");
@@ -37,8 +37,8 @@ public class PresentResource
 
 	@GET
 	@Path("{id}")
-	public PresentIdea getPresentByList(@PathParam("id") Long id)
+	public PresentIdea getPresentByList(@PathParam("id") UUID id)
 	{
-		return presentIdeaRepository.findById(id);
+		return presentIdeaRepository.find("id", id).firstResult();
 	}
 }
