@@ -27,8 +27,7 @@ class WishListResourceTest
 			.contentType(ContentType.JSON)
 			.post()
 			.then()
-			.statusCode(200)
-			.body("id", is(NEXT_ENTITY_ID));
+			.statusCode(200);
 	}
 
 	@Test
@@ -45,7 +44,7 @@ class WishListResourceTest
 	@Test
 	void testGetWishListById()
 	{
-		int testId = 2;
+		String testId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
 
 		given()
 			.when()
