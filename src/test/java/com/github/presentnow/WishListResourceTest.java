@@ -74,7 +74,9 @@ class WishListResourceTest
 			.contentType(ContentType.JSON)
 			.put("/" + testId)
 			.then()
-			.statusCode(204);
+			.statusCode(200)
+			.body("name", is(updateData.name()))
+			.body("description", is(updateData.description()));
 	}
 
 	@Test
@@ -95,7 +97,8 @@ class WishListResourceTest
 			.contentType(ContentType.JSON)
 			.put("/" + testId)
 			.then()
-			.statusCode(204);
+			.statusCode(200)
+			.body("name", is(updateData.name()));
 	}
 
 	@Test
@@ -116,7 +119,8 @@ class WishListResourceTest
 			.contentType(ContentType.JSON)
 			.put("/" + testId)
 			.then()
-			.statusCode(204);
+			.statusCode(200)
+			.body("description", is(updateData.description()));
 	}
 
 	@Test

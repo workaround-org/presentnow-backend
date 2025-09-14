@@ -65,9 +65,9 @@ public class WishListResource
 	@PUT
 	@Path("{id}")
 	@Transactional
-	public void updateWishList(@PathParam("id") UUID id, WishListUpdate updatedList)
+	public WishListUpdate updateWishList(@PathParam("id") UUID id, WishListUpdate updatedList)
 	{
-		wishListUpdateAction.run(id, updatedList);
+		return wishListUpdateAction.run(id, updatedList);
 	}
 
 	@DELETE
