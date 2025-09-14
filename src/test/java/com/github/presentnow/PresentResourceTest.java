@@ -1,11 +1,16 @@
 package com.github.presentnow;
 
 import com.github.presentnow.entity.PresentIdea;
+import io.quarkus.oidc.UserInfo;
 import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
+import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
+import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 import java.util.UUID;
 
@@ -14,37 +19,15 @@ import static org.hamcrest.Matchers.is;
 
 @QuarkusTest
 @TestHTTPEndpoint(PresentResource.class)
+@TestSecurity(user = "user")
 public class PresentResourceTest
 {
-	@Test
-	void getPresentById()
+	@BeforeAll
+	public static void setup()
 	{
-		given()
-			.when()
-			.get("11111111-1111-1111-1111-111111111111")
-			.then()
-			.statusCode(200)
-			.body("name", is("Personalized Star Map"));
-	}
-
-	@Test
-	void getPresentByIdInvalidUUID()
-	{
-		given()
-			.when()
-			.get("INVALID-UUID")
-			.then()
-			.statusCode(404);
-	}
-
-	@Test
-	void getPresentByIdNotFound()
-	{
-		given()
-			.when()
-			.get("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa")
-			.then()
-			.statusCode(204);
+		UserInfo mock = Mockito.mock(UserInfo.class);
+		Mockito.when(mock.getSubject()).thenReturn("test-user");
+		QuarkusMock.installMockForType(mock, UserInfo.class);
 	}
 
 	@Test

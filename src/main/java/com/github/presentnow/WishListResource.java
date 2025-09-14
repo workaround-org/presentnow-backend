@@ -5,6 +5,8 @@ import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.ActiveWishList;
 import com.github.presentnow.entity.WishList;
 import com.github.presentnow.entity.WishListUpdate;
+import io.quarkus.oidc.UserInfo;
+import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -22,24 +24,25 @@ import jakarta.ws.rs.core.MediaType;
 import java.util.List;
 import java.util.UUID;
 
-@Path("/lists")
+@Path("lists")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
 public class WishListResource
 {
-	public static final String DUMMY_USER = "dummyUser";
-
 	@Inject
 	WishListRepository wishListRepository;
 
 	@Inject
 	WishListUpdateAction wishListUpdateAction;
 
+	@Inject
+	UserInfo userInfo;
+
 	@GET
 	public List<ActiveWishList> getListsForUser()
 	{
 		// ToDo: Add Auth via Mail
-		return wishListRepository.getActive(DUMMY_USER).stream()
+		return wishListRepository.getActive(getUsername()).stream()
 			.map(ActiveWishList::new)
 			.toList();
 	}
@@ -48,18 +51,11 @@ public class WishListResource
 	@Transactional
 	public WishList saveList(WishList list)
 	{
-		list.setUsername(DUMMY_USER);
+		list.setUsername(getUsername());
 		list.setActive(true);
 		list.setId(UUID.randomUUID());
 		wishListRepository.persist(list);
 		return list;
-	}
-
-	@GET
-	@Path("{id}")
-	public WishList getListById(@PathParam("id") UUID id)
-	{
-		return wishListRepository.find("id", id).firstResult();
 	}
 
 	@PUT
@@ -67,7 +63,7 @@ public class WishListResource
 	@Transactional
 	public WishListUpdate updateWishList(@PathParam("id") UUID id, WishListUpdate updatedList)
 	{
-		return wishListUpdateAction.run(id, updatedList);
+		return wishListUpdateAction.run(id, updatedList, getUsername());
 	}
 
 	@DELETE
@@ -80,12 +76,22 @@ public class WishListResource
 		{
 			throw new NotFoundException("Wish list not found");
 		}
-
 		// Only allow the owner to delete their list
-		if (!DUMMY_USER.equals(existingList.getUsername()))
+		boolean isOwner = getUsername().equals(existingList.getUsername());
+		if (!isOwner)
 		{
 			throw new ForbiddenException("Not authorized to delete this list");
 		}
 		wishListRepository.delete(existingList);
+	}
+
+	private String getUsername()
+	{
+		String username = userInfo.getSubject();
+		if (username == null && ConfigUtils.getProfiles().contains("dev"))
+		{
+			username = "test-user";
+		}
+		return username;
 	}
 }

@@ -24,10 +24,10 @@ VALUES (1, '11111111-1111-1111-1111-111111111111', 'aaaaaaaa-aaaa-aaaa-aaaa-aaaa
 INSERT INTO public.wishlist (active, expires, id, description, name, username)
 VALUES ('t', 1779888096, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
         'A list of unforgettable experiences and adventures desired for the birthday celebration, such as travel vouchers, workshops, or special events!',
-        'Birthday Experience Wishlist', 'dummyUser'),
+        'Birthday Experience Wishlist', 'test-user'),
        ('t', 1779888096, 'bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb',
         'A collection of thoughtful gift ideas and presents desired for the birthday celebration, including both tangible items and memorable experiences!',
-        'Birthday Gift Wishlist', 'dummyUser');
+        'Birthday Gift Wishlist', 'test-user');
 --
 --  Sequence alter
 --

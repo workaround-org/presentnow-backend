@@ -4,11 +4,14 @@ import com.github.presentnow.actions.PresentUpdateAction;
 import com.github.presentnow.db.PresentIdeaRepository;
 import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.PresentIdea;
+import com.github.presentnow.entity.WishList;
+import io.quarkus.oidc.UserInfo;
+import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
 import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.GET;
+import jakarta.ws.rs.ForbiddenException;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
 import jakarta.ws.rs.PUT;
@@ -17,6 +20,7 @@ import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
 import jakarta.ws.rs.core.MediaType;
 
+import java.util.Optional;
 import java.util.UUID;
 
 @Path("present")
@@ -33,25 +37,17 @@ public class PresentResource
 	@Inject
 	PresentUpdateAction presentUpdateAction;
 
+	@Inject
+	UserInfo userInfo;
+
 	@POST
 	@Transactional
 	public PresentIdea savePresentIdea(PresentIdea idea)
 	{
-		boolean isValidWishList = wishListRepository.find("id", idea.getListId()) == null;
-		if (isValidWishList)
-		{
-			throw new NotFoundException("List not found");
-		}
+		wishListCheck(idea);
 		idea.setId(UUID.randomUUID());
 		presentIdeaRepository.persist(idea);
 		return idea;
-	}
-
-	@GET
-	@Path("{id}")
-	public PresentIdea getPresentByList(@PathParam("id") UUID id)
-	{
-		return presentIdeaRepository.find("id", id).firstResult();
 	}
 
 	@PUT
@@ -59,6 +55,9 @@ public class PresentResource
 	@Transactional
 	public PresentIdea updatePresentIdea(@PathParam("id") UUID id, PresentIdea updatedIdea)
 	{
+		PresentIdea existingIdea = presentIdeaRepository.find("id", id).firstResult();
+		wishListCheck(existingIdea);
+		updatedIdea.setId(id);
 		return presentUpdateAction.run(id, updatedIdea);
 	}
 
@@ -68,10 +67,25 @@ public class PresentResource
 	public void deletePresentIdea(@PathParam("id") UUID id)
 	{
 		PresentIdea existingIdea = presentIdeaRepository.find("id", id).firstResult();
-		if (existingIdea == null)
+		wishListCheck(existingIdea);
+		presentIdeaRepository.delete(existingIdea);
+	}
+
+	private void wishListCheck(PresentIdea idea)
+	{
+		if (idea == null)
 		{
 			throw new NotFoundException("Present idea not found");
 		}
-		presentIdeaRepository.delete(existingIdea);
+		Optional<WishList> wishList = wishListRepository.find("id", idea.getListId()).firstResultOptional();
+		if (wishList.isEmpty())
+		{
+			throw new NotFoundException("List not found");
+		}
+		boolean isOwner = wishList.get().getUsername().equals(userInfo.getSubject());
+		if (!isOwner && !ConfigUtils.getProfiles().contains("dev"))
+		{
+			throw new ForbiddenException("You are not owner of this list");
+		}
 	}
 }

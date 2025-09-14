@@ -15,12 +15,17 @@ public class WishListUpdateAction
 	@Inject
 	WishListRepository wishListRepository;
 
-	public WishListUpdate run(UUID id, WishListUpdate updateData)
+	public WishListUpdate run(UUID id, WishListUpdate updateData, String username)
 	{
 		WishList existingList = wishListRepository.find("id", id).firstResult();
 		if (existingList == null)
 		{
 			throw new NotFoundException("Wish list not found");
+		}
+		boolean isOwner = existingList.getUsername().equals(username);
+		if (!isOwner)
+		{
+			throw new NotFoundException("Wish list not found for this user");
 		}
 
 		// Update only non-null fields
@@ -31,10 +36,6 @@ public class WishListUpdateAction
 		if (updateData.description() != null)
 		{
 			existingList.setDescription(updateData.description());
-		}
-		if (updateData.username() != null)
-		{
-			existingList.setUsername(updateData.username());
 		}
 		if (updateData.active() != null)
 		{
