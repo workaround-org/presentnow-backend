@@ -86,9 +86,6 @@ public class WishListResource
 		{
 			throw new ForbiddenException("Not authorized to delete this list");
 		}
-
-		// Instead of hard delete, mark as inactive for data integrity
-		existingList.setActive(false);
-		wishListRepository.persist(existingList);
+		wishListRepository.delete(existingList);
 	}
 }

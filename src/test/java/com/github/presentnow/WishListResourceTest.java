@@ -163,6 +163,13 @@ class WishListResourceTest
 			.delete("/" + testId)
 			.then()
 			.statusCode(204);
+
+		// Verify the list has been deleted
+		given()
+			.when()
+			.get("/" + testId)
+			.then()
+			.statusCode(204);
 	}
 
 	@Test
