@@ -2,6 +2,7 @@ package com.github.presentnow.actions;
 
 import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.WishList;
+import com.github.presentnow.entity.WishListUpdate;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.ForbiddenException;
@@ -17,7 +18,7 @@ public class WishListUpdateAction
 	@Inject
 	WishListRepository wishListRepository;
 
-	public WishList run(UUID id, WishList updatedList)
+	public void run(UUID id, WishListUpdate updatedList)
 	{
 		WishList existingList = wishListRepository.find("id", id).firstResult();
 		if (existingList == null)
@@ -32,24 +33,23 @@ public class WishListUpdateAction
 		}
 
 		// Update fields
-		if (updatedList.getName() != null)
+		if (updatedList.name() != null)
 		{
-			existingList.setName(updatedList.getName());
+			existingList.setName(updatedList.name());
 		}
-		if (updatedList.getDescription() != null)
+		if (updatedList.description() != null)
 		{
-			existingList.setDescription(updatedList.getDescription());
+			existingList.setDescription(updatedList.description());
 		}
-		if (updatedList.getExpires() != null)
+		if (updatedList.expires() != null)
 		{
-			existingList.setExpires(updatedList.getExpires());
+			existingList.setExpires(updatedList.expires());
 		}
-		if (updatedList.getActive() != null)
+		if (updatedList.active() != null)
 		{
-			existingList.setActive(updatedList.getActive());
+			existingList.setActive(updatedList.active());
 		}
 
 		wishListRepository.persist(existingList);
-		return existingList;
 	}
 }

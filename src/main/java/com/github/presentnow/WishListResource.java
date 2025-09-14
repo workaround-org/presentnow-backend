@@ -4,6 +4,7 @@ import com.github.presentnow.actions.WishListUpdateAction;
 import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.ActiveWishList;
 import com.github.presentnow.entity.WishList;
+import com.github.presentnow.entity.WishListUpdate;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -64,9 +65,9 @@ public class WishListResource
 	@PUT
 	@Path("{id}")
 	@Transactional
-	public WishList updateWishList(@PathParam("id") UUID id, WishList updatedList)
+	public void updateWishList(@PathParam("id") UUID id, WishListUpdate updatedList)
 	{
-		return wishListUpdateAction.run(id, updatedList);
+		wishListUpdateAction.run(id, updatedList);
 	}
 
 	@DELETE
