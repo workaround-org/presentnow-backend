@@ -1,6 +1,5 @@
 package com.github.presentnow;
 
-import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.WishList;
 import com.github.presentnow.entity.WishListUpdate;
 import io.quarkus.oidc.UserInfo;
@@ -9,12 +8,9 @@ import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
 import io.quarkus.test.security.TestSecurity;
 import io.restassured.http.ContentType;
-import jakarta.inject.Inject;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
@@ -24,9 +20,6 @@ import static org.hamcrest.Matchers.is;
 @TestSecurity(user = "test-user")
 class WishListResourceTest
 {
-	@Inject
-	WishListRepository wishListRepository;
-
 	@BeforeAll
 	public static void setup()
 	{
@@ -151,11 +144,17 @@ class WishListResourceTest
 	@Test
 	void testDeleteWishList()
 	{
-		UUID testId = UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa");
+		String testId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
 
 		// First verify the list exists
-		wishListRepository.find("id", testId).firstResultOptional()
-			.orElseThrow(() -> new RuntimeException("Test WishList not found in DB"));
+		given()
+			.when()
+			// need because for the HTTPTestResource annotation
+			.basePath("/api/present-now/v1/public/lists")
+			.get(testId)
+			.then()
+			.statusCode(200)
+			.body("id", is(testId));
 
 		// Delete the list
 		given()
@@ -165,9 +164,13 @@ class WishListResourceTest
 			.statusCode(204);
 
 		// Verify the list has been deleted
-		wishListRepository.find("id", testId).firstResultOptional().ifPresent(list -> {
-			throw new RuntimeException("WishList was not deleted from DB");
-		});
+		given()
+			.when()
+			// need because for the HTTPTestResource annotation
+			.basePath("/api/present-now/v1/public/lists")
+			.get(testId)
+			.then()
+			.statusCode(204);
 	}
 
 	@Test
