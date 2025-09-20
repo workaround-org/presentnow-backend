@@ -3,7 +3,7 @@ package com.github.presentnow;
 import io.quarkus.test.junit.QuarkusIntegrationTest;
 
 @QuarkusIntegrationTest
-class WishListResourceIT extends WishListResourceTest
+public class PublicResourceTestIT extends PublicResourceTest
 {
-	// Execute the same tests but in packaged mode.
+	// runs the same tests as the parent class
 }

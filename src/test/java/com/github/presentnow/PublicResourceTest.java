@@ -55,5 +55,4 @@ public class PublicResourceTest
 			.body("id", is(testId))
 			.body("name", is("Birthday Gift Wishlist"));
 	}
-
 }

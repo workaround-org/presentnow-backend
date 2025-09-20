@@ -3,6 +3,7 @@ package com.github.presentnow;
 import com.github.presentnow.entity.WishList;
 import com.github.presentnow.entity.WishListUpdate;
 import io.quarkus.oidc.UserInfo;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusMock;
 import io.quarkus.test.junit.QuarkusTest;
@@ -29,6 +30,7 @@ class WishListResourceTest
 	}
 
 	@Test
+	@TestTransaction
 	void testCreateWishList()
 	{
 		WishList myList = getWishList();
@@ -43,6 +45,7 @@ class WishListResourceTest
 	}
 
 	@Test
+	@TestTransaction
 	void testGetWishListsByUser()
 	{
 		given()
@@ -54,6 +57,7 @@ class WishListResourceTest
 	}
 
 	@Test
+	@TestTransaction
 	void testUpdateWishList()
 	{
 		String testId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
@@ -77,6 +81,7 @@ class WishListResourceTest
 	}
 
 	@Test
+	@TestTransaction
 	void testUpdateWishListNameOnly()
 	{
 		String testId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
@@ -99,6 +104,7 @@ class WishListResourceTest
 	}
 
 	@Test
+	@TestTransaction
 	void testUpdateWishListDescriptionOnly()
 	{
 		String testId = "bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb";
@@ -142,6 +148,7 @@ class WishListResourceTest
 	}
 
 	@Test
+	@TestTransaction
 	void testDeleteWishList()
 	{
 		String testId = "aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa";
