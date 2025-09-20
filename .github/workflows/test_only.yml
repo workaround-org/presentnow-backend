@@ -1,4 +1,4 @@
-name: Build and Push Quarkus App
+name: Only run Maven tests
 
 on:
   push:
