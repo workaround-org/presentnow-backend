@@ -15,6 +15,7 @@ CREATE TABLE WishList
     name        VARCHAR(255),
     description VARCHAR(255),
     username    VARCHAR(255),
+    displayName VARCHAR(255),
     active      BOOLEAN,
     expires     BIGINT,
     CONSTRAINT pk_wishlist PRIMARY KEY (id)

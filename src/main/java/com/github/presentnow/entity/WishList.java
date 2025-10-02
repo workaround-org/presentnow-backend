@@ -15,6 +15,7 @@ public class WishList
 	private String name;
 	private String description;
 	private String username;
+	private String displayName; // prettier name for display
 	private Boolean active;
 	@OneToMany(mappedBy = "listId")
 	private List<PresentIdea> presentIdeas;
@@ -89,5 +90,15 @@ public class WishList
 	public void setPresentIdeas(List<PresentIdea> presentIdeas)
 	{
 		this.presentIdeas = presentIdeas;
+	}
+
+	public String getDisplayName()
+	{
+		return displayName;
+	}
+
+	public void setDisplayName(String displayname)
+	{
+		this.displayName = displayname;
 	}
 }

@@ -1,6 +1,7 @@
 package com.github.presentnow;
 
 import com.github.presentnow.actions.WishListUpdateAction;
+import com.github.presentnow.db.PresentIdeaRepository;
 import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.ActiveWishList;
 import com.github.presentnow.entity.WishList;
@@ -33,6 +34,9 @@ public class WishListResource
 	WishListRepository wishListRepository;
 
 	@Inject
+	PresentIdeaRepository presentIdeaRepository;
+
+	@Inject
 	WishListUpdateAction wishListUpdateAction;
 
 	@Inject
@@ -42,7 +46,7 @@ public class WishListResource
 	public List<ActiveWishList> getListsForUser()
 	{
 		// ToDo: Add Auth via Mail
-		return wishListRepository.getActive(getUsername()).stream()
+		return wishListRepository.getActive(getSub()).stream()
 			.map(ActiveWishList::new)
 			.toList();
 	}
@@ -51,7 +55,8 @@ public class WishListResource
 	@Transactional
 	public WishList saveList(WishList list)
 	{
-		list.setUsername(getUsername());
+		list.setUsername(getSub());
+		list.setDisplayName(getUsername());
 		list.setActive(true);
 		list.setId(UUID.randomUUID());
 		wishListRepository.persist(list);
@@ -63,7 +68,7 @@ public class WishListResource
 	@Transactional
 	public WishListUpdate updateWishList(@PathParam("id") UUID id, WishListUpdate updatedList)
 	{
-		return wishListUpdateAction.run(id, updatedList, getUsername());
+		return wishListUpdateAction.run(id, updatedList, getSub());
 	}
 
 	@DELETE
@@ -77,21 +82,33 @@ public class WishListResource
 			throw new NotFoundException("Wish list not found");
 		}
 		// Only allow the owner to delete their list
-		boolean isOwner = getUsername().equals(existingList.getUsername());
+		boolean isOwner = getSub().equals(existingList.getUsername());
 		if (!isOwner)
 		{
 			throw new ForbiddenException("Not authorized to delete this list");
 		}
 		wishListRepository.delete(existingList);
+		presentIdeaRepository.delete("listId", id);
 	}
 
-	private String getUsername()
+	private String getSub()
 	{
+		String name = userInfo.getName();
 		String username = userInfo.getSubject();
 		if (username == null && ConfigUtils.getProfiles().contains("dev"))
 		{
 			username = "test-user";
 		}
 		return username;
+	}
+
+	private String getUsername()
+	{
+		String name = userInfo.getName();
+		if (name == null && ConfigUtils.getProfiles().contains("dev"))
+		{
+			name = "Test User";
+		}
+		return name;
 	}
 }
