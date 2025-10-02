@@ -1,7 +1,9 @@
 package com.github.presentnow;
 
+import com.github.presentnow.actions.GetFrontendConfigAction;
 import com.github.presentnow.db.PresentIdeaRepository;
 import com.github.presentnow.db.WishListRepository;
+import com.github.presentnow.entity.FrontendConfig;
 import com.github.presentnow.entity.PresentIdea;
 import com.github.presentnow.entity.WishList;
 import jakarta.inject.Inject;
@@ -23,6 +25,9 @@ public class PublicResource
 	@Inject
 	PresentIdeaRepository presentIdeaRepository;
 
+	@Inject
+	GetFrontendConfigAction configAction;
+
 	@GET
 	@Path("lists/{id}")
 	public WishList getListById(@PathParam("id") UUID id)
@@ -35,5 +40,13 @@ public class PublicResource
 	public PresentIdea getPresentByList(@PathParam("id") UUID id)
 	{
 		return presentIdeaRepository.find("id", id).firstResult();
+	}
+
+	@GET
+	@Path("config")
+	@Produces(MediaType.APPLICATION_JSON)
+	public FrontendConfig getFrontendConfig()
+	{
+		return configAction.getFrontendConfig();
 	}
 }
