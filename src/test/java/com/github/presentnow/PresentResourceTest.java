@@ -53,6 +53,8 @@ public class PresentResourceTest
 		updatedPresent.setUrl("https://updated.example.com");
 		updatedPresent.setImportance(5);
 		updatedPresent.setListId(UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"));
+		updatedPresent.setClaimed(true);
+		updatedPresent.setClaimerName("John Doe");
 
 		given()
 			.when()
@@ -64,7 +66,9 @@ public class PresentResourceTest
 			.body("name", is("Updated Present Name"))
 			.body("description", is("Updated Description"))
 			.body("url", is("https://updated.example.com"))
-			.body("importance", is(5));
+			.body("importance", is(5))
+			.body("claimed", is(true))
+			.body("claimerName", is("John Doe"));
 	}
 
 	@Test

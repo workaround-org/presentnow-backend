@@ -1,9 +1,9 @@
 package com.github.presentnow.entity;
 
+import java.util.UUID;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-
-import java.util.UUID;
 
 @Entity
 public class PresentIdea
@@ -15,6 +15,28 @@ public class PresentIdea
 	private String url;
 	private String description;
 	private int importance;
+	private boolean claimed;
+	private String claimerName;
+
+	public boolean isClaimed()
+	{
+		return claimed;
+	}
+
+	public void setClaimed(boolean claimed)
+	{
+		this.claimed = claimed;
+	}
+
+	public String getClaimerName()
+	{
+		return claimerName;
+	}
+
+	public void setClaimerName(String claimerName)
+	{
+		this.claimerName = claimerName;
+	}
 
 	public UUID getId()
 	{

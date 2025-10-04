@@ -58,6 +58,11 @@ public class PresentUpdateAction
 		{
 			existingIdea.setImportance(updatedIdea.getImportance());
 		}
+		existingIdea.setClaimed(updatedIdea.isClaimed());
+		if (updatedIdea.getClaimerName() != null)
+		{
+			existingIdea.setClaimerName(updatedIdea.getClaimerName());
+		}
 
 		presentIdeaRepository.persist(existingIdea);
 		return existingIdea;
