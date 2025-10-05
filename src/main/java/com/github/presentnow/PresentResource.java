@@ -58,6 +58,16 @@ public class PresentResource
 		PresentIdea existingIdea = presentIdeaRepository.find("id", id).firstResult();
 		wishListCheck(existingIdea);
 		updatedIdea.setId(id);
+		boolean isNowClaimed = !existingIdea.isClaimed() && updatedIdea.isClaimed();
+		if (isNowClaimed)
+		{
+			updatedIdea.setClaimerName(userInfo.getName());
+		}
+		boolean isNowUnclaimed = existingIdea.isClaimed() && !updatedIdea.isClaimed();
+		if (isNowUnclaimed)
+		{
+			updatedIdea.setClaimerName(null);
+		}
 		return presentUpdateAction.run(id, updatedIdea);
 	}
 
