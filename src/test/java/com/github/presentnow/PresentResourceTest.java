@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 
 @QuarkusTest
 @TestHTTPEndpoint(PresentResource.class)
@@ -27,6 +28,7 @@ public class PresentResourceTest
 	{
 		UserInfo mock = Mockito.mock(UserInfo.class);
 		Mockito.when(mock.getSubject()).thenReturn("test-user");
+		Mockito.when(mock.getName()).thenReturn("Test User");
 		QuarkusMock.installMockForType(mock, UserInfo.class);
 	}
 
@@ -54,7 +56,6 @@ public class PresentResourceTest
 		updatedPresent.setImportance(5);
 		updatedPresent.setListId(UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"));
 		updatedPresent.setClaimed(true);
-		updatedPresent.setClaimerName("John Doe");
 
 		given()
 			.when()
@@ -68,7 +69,7 @@ public class PresentResourceTest
 			.body("url", is("https://updated.example.com"))
 			.body("importance", is(5))
 			.body("claimed", is(true))
-			.body("claimerName", is("John Doe"));
+			.body("claimerName", is("Test User"));
 	}
 
 	@Test
@@ -109,6 +110,115 @@ public class PresentResourceTest
 			.delete("ffffffff-ffff-ffff-ffff-ffffffffffff")
 			.then()
 			.statusCode(404);
+	}
+
+	@Test
+	@TestTransaction
+	void claimPresent()
+	{
+		PresentIdea claimUpdate = new PresentIdea();
+		claimUpdate.setClaimed(true);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(claimUpdate)
+			.put("22222222-2222-2222-2222-222222222222")
+			.then()
+			.statusCode(200)
+			.body("claimed", is(true))
+			.body("claimerName", is("Test User"));
+	}
+
+	@Test
+	@TestTransaction
+	void unclaimPresent()
+	{
+		// First claim the present
+		PresentIdea claimUpdate = new PresentIdea();
+		claimUpdate.setClaimed(true);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(claimUpdate)
+			.put("33333333-3333-3333-3333-333333333333")
+			.then()
+			.statusCode(200)
+			.body("claimed", is(true))
+			.body("claimerName", is("Test User"));
+
+		// Now unclaim it
+		PresentIdea unclaimUpdate = new PresentIdea();
+		unclaimUpdate.setClaimed(false);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(unclaimUpdate)
+			.put("33333333-3333-3333-3333-333333333333")
+			.then()
+			.statusCode(200)
+			.body("claimed", is(false))
+			.body("claimerName", is(nullValue()));
+	}
+
+	@Test
+	@TestTransaction
+	void updateAlreadyClaimedPresent()
+	{
+		// First claim the present
+		PresentIdea claimUpdate = new PresentIdea();
+		claimUpdate.setClaimed(true);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(claimUpdate)
+			.put("44444444-4444-4444-4444-444444444444")
+			.then()
+			.statusCode(200)
+			.body("claimed", is(true))
+			.body("claimerName", is("Test User"));
+
+		// Update other fields while keeping it claimed
+		PresentIdea updatePresent = new PresentIdea();
+		updatePresent.setName("Updated Name");
+		updatePresent.setClaimed(true);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(updatePresent)
+			.put("44444444-4444-4444-4444-444444444444")
+			.then()
+			.statusCode(200)
+			.body("name", is("Updated Name"))
+			.body("claimed", is(true))
+			.body("claimerName", is("Test User"));
+	}
+
+	@Test
+	@TestTransaction
+	void createPresentWithClaimedFlag()
+	{
+		PresentIdea newPresent = new PresentIdea();
+		newPresent.setName("New Present");
+		newPresent.setDescription("New Present Description");
+		newPresent.setUrl("https://www.example.com/");
+		newPresent.setImportance(3);
+		newPresent.setListId(UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"));
+		newPresent.setClaimed(false);
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(newPresent)
+			.post()
+			.then()
+			.statusCode(200)
+			.body("claimed", is(false))
+			.body("claimerName", is(nullValue()));
 	}
 
 	private PresentIdea getTestPresent()
