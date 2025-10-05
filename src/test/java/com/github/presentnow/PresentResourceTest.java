@@ -55,7 +55,6 @@ public class PresentResourceTest
 		updatedPresent.setUrl("https://updated.example.com");
 		updatedPresent.setImportance(5);
 		updatedPresent.setListId(UUID.fromString("bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb"));
-		updatedPresent.setClaimed(true);
 
 		given()
 			.when()
@@ -67,9 +66,7 @@ public class PresentResourceTest
 			.body("name", is("Updated Present Name"))
 			.body("description", is("Updated Description"))
 			.body("url", is("https://updated.example.com"))
-			.body("importance", is(5))
-			.body("claimed", is(true))
-			.body("claimerName", is("Test User"));
+			.body("importance", is(5));
 	}
 
 	@Test
@@ -116,14 +113,10 @@ public class PresentResourceTest
 	@TestTransaction
 	void claimPresent()
 	{
-		PresentIdea claimUpdate = new PresentIdea();
-		claimUpdate.setClaimed(true);
-
 		given()
 			.when()
 			.contentType(ContentType.JSON)
-			.body(claimUpdate)
-			.put("22222222-2222-2222-2222-222222222222")
+			.post("22222222-2222-2222-2222-222222222222/claim")
 			.then()
 			.statusCode(200)
 			.body("claimed", is(true))
@@ -135,28 +128,20 @@ public class PresentResourceTest
 	void unclaimPresent()
 	{
 		// First claim the present
-		PresentIdea claimUpdate = new PresentIdea();
-		claimUpdate.setClaimed(true);
-
 		given()
 			.when()
 			.contentType(ContentType.JSON)
-			.body(claimUpdate)
-			.put("33333333-3333-3333-3333-333333333333")
+			.post("33333333-3333-3333-3333-333333333333/claim")
 			.then()
 			.statusCode(200)
 			.body("claimed", is(true))
 			.body("claimerName", is("Test User"));
 
 		// Now unclaim it
-		PresentIdea unclaimUpdate = new PresentIdea();
-		unclaimUpdate.setClaimed(false);
-
 		given()
 			.when()
 			.contentType(ContentType.JSON)
-			.body(unclaimUpdate)
-			.put("33333333-3333-3333-3333-333333333333")
+			.delete("33333333-3333-3333-3333-333333333333/claim")
 			.then()
 			.statusCode(200)
 			.body("claimed", is(false))
@@ -168,14 +153,10 @@ public class PresentResourceTest
 	void updateAlreadyClaimedPresent()
 	{
 		// First claim the present
-		PresentIdea claimUpdate = new PresentIdea();
-		claimUpdate.setClaimed(true);
-
 		given()
 			.when()
 			.contentType(ContentType.JSON)
-			.body(claimUpdate)
-			.put("44444444-4444-4444-4444-444444444444")
+			.post("44444444-4444-4444-4444-444444444444/claim")
 			.then()
 			.statusCode(200)
 			.body("claimed", is(true))
@@ -184,7 +165,6 @@ public class PresentResourceTest
 		// Update other fields while keeping it claimed
 		PresentIdea updatePresent = new PresentIdea();
 		updatePresent.setName("Updated Name");
-		updatePresent.setClaimed(true);
 
 		given()
 			.when()
@@ -200,7 +180,7 @@ public class PresentResourceTest
 
 	@Test
 	@TestTransaction
-	void createPresentWithClaimedFlag()
+	void createPresentWithDefaultClaimedFlag()
 	{
 		PresentIdea newPresent = new PresentIdea();
 		newPresent.setName("New Present");
@@ -208,7 +188,6 @@ public class PresentResourceTest
 		newPresent.setUrl("https://www.example.com/");
 		newPresent.setImportance(3);
 		newPresent.setListId(UUID.fromString("aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa"));
-		newPresent.setClaimed(false);
 
 		given()
 			.when()
@@ -219,6 +198,30 @@ public class PresentResourceTest
 			.statusCode(200)
 			.body("claimed", is(false))
 			.body("claimerName", is(nullValue()));
+	}
+
+	@Test
+	@TestTransaction
+	void claimPresentNotFound()
+	{
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.post("ffffffff-ffff-ffff-ffff-ffffffffffff/claim")
+			.then()
+			.statusCode(404); // Will fail with NPE since no null check in new endpoints
+	}
+
+	@Test
+	@TestTransaction
+	void unclaimPresentNotFound()
+	{
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.delete("ffffffff-ffff-ffff-ffff-ffffffffffff/claim")
+			.then()
+			.statusCode(404); // Will fail with NPE since no null check in new endpoints
 	}
 
 	private PresentIdea getTestPresent()
