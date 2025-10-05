@@ -58,14 +58,6 @@ public class PresentUpdateAction
 		{
 			existingIdea.setImportance(updatedIdea.getImportance());
 		}
-		existingIdea.setClaimed(updatedIdea.isClaimed());
-		// Always update claimerName when claimed status changes
-		// When claiming, it's set to the user's name in PresentResource
-		// When unclaiming, it's set to null in PresentResource
-		if (!existingIdea.isClaimed() || updatedIdea.getClaimerName() != null)
-		{
-			existingIdea.setClaimerName(updatedIdea.getClaimerName());
-		}
 
 		presentIdeaRepository.persist(existingIdea);
 		return existingIdea;
