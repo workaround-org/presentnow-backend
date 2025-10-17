@@ -8,6 +8,7 @@ import com.github.presentnow.entity.PresentIdea;
 import com.github.presentnow.entity.WishList;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.BadRequestException;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.NotFoundException;
 import jakarta.ws.rs.POST;
@@ -74,6 +75,10 @@ public class PublicResource
 		if (existingIdea == null)
 		{
 			throw new NotFoundException("Present idea not found");
+		}
+		if (existingIdea.isClaimed())
+		{
+			throw new BadRequestException("Present idea is already claimed");
 		}
 		existingIdea.setClaimerName(idea.getClaimerName());
 		existingIdea.setClaimed(true);
