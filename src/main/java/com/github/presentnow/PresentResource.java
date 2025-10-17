@@ -80,23 +80,7 @@ public class PresentResource
 		wishListCheck(existingIdea);
 		presentIdeaRepository.delete(existingIdea);
 	}
-
-	@POST
-	@Path("{id}/claim")
-	@Transactional
-	public PresentIdea claimPresentIdea(@PathParam("id") UUID id)
-	{
-		PresentIdea existingIdea = presentIdeaRepository.find("id", id).firstResult();
-		if (existingIdea == null)
-		{
-			throw new NotFoundException("Present idea not found");
-		}
-		existingIdea.setClaimerName(userInfo.getName());
-		existingIdea.setClaimed(true);
-		presentIdeaRepository.persist(existingIdea);
-		return existingIdea;
-	}
-
+	
 	@DELETE
 	@Path("{id}/claim")
 	@Transactional
