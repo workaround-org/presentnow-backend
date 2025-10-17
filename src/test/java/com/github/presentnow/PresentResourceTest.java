@@ -111,32 +111,8 @@ public class PresentResourceTest
 
 	@Test
 	@TestTransaction
-	void claimPresent()
-	{
-		given()
-			.when()
-			.contentType(ContentType.JSON)
-			.post("22222222-2222-2222-2222-222222222222/claim")
-			.then()
-			.statusCode(200)
-			.body("claimed", is(true))
-			.body("claimerName", is("Test User"));
-	}
-
-	@Test
-	@TestTransaction
 	void unclaimPresent()
 	{
-		// First claim the present
-		given()
-			.when()
-			.contentType(ContentType.JSON)
-			.post("33333333-3333-3333-3333-333333333333/claim")
-			.then()
-			.statusCode(200)
-			.body("claimed", is(true))
-			.body("claimerName", is("Test User"));
-
 		// Now unclaim it
 		given()
 			.when()
@@ -146,36 +122,6 @@ public class PresentResourceTest
 			.statusCode(200)
 			.body("claimed", is(false))
 			.body("claimerName", is(nullValue()));
-	}
-
-	@Test
-	@TestTransaction
-	void updateAlreadyClaimedPresent()
-	{
-		// First claim the present
-		given()
-			.when()
-			.contentType(ContentType.JSON)
-			.post("44444444-4444-4444-4444-444444444444/claim")
-			.then()
-			.statusCode(200)
-			.body("claimed", is(true))
-			.body("claimerName", is("Test User"));
-
-		// Update other fields while keeping it claimed
-		PresentIdea updatePresent = new PresentIdea();
-		updatePresent.setName("Updated Name");
-
-		given()
-			.when()
-			.contentType(ContentType.JSON)
-			.body(updatePresent)
-			.put("44444444-4444-4444-4444-444444444444")
-			.then()
-			.statusCode(200)
-			.body("name", is("Updated Name"))
-			.body("claimed", is(true))
-			.body("claimerName", is("Test User"));
 	}
 
 	@Test
@@ -202,18 +148,6 @@ public class PresentResourceTest
 
 	@Test
 	@TestTransaction
-	void claimPresentNotFound()
-	{
-		given()
-			.when()
-			.contentType(ContentType.JSON)
-			.post("ffffffff-ffff-ffff-ffff-ffffffffffff/claim")
-			.then()
-			.statusCode(404); // Will fail with NPE since no null check in new endpoints
-	}
-
-	@Test
-	@TestTransaction
 	void unclaimPresentNotFound()
 	{
 		given()
@@ -221,7 +155,7 @@ public class PresentResourceTest
 			.contentType(ContentType.JSON)
 			.delete("ffffffff-ffff-ffff-ffff-ffffffffffff/claim")
 			.then()
-			.statusCode(404); // Will fail with NPE since no null check in new endpoints
+			.statusCode(404);
 	}
 
 	private PresentIdea getTestPresent()

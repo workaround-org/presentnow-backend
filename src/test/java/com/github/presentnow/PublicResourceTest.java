@@ -1,7 +1,10 @@
 package com.github.presentnow;
 
+import com.github.presentnow.entity.PresentIdea;
+import io.quarkus.test.TestTransaction;
 import io.quarkus.test.common.http.TestHTTPEndpoint;
 import io.quarkus.test.junit.QuarkusTest;
+import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Test;
 
 import static io.restassured.RestAssured.given;
@@ -54,5 +57,39 @@ public class PublicResourceTest
 			.statusCode(200)
 			.body("id", is(testId))
 			.body("name", is("Birthday Gift Wishlist"));
+	}
+
+	@Test
+	@TestTransaction
+	void claimPresent()
+	{
+		PresentIdea claimRequest = new PresentIdea();
+		claimRequest.setClaimerName("Test User");
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(claimRequest)
+			.post("22222222-2222-2222-2222-222222222222/claim")
+			.then()
+			.statusCode(200)
+			.body("claimed", is(true))
+			.body("claimerName", is("Test User"));
+	}
+
+	@Test
+	@TestTransaction
+	void claimPresentNotFound()
+	{
+		PresentIdea claimRequest = new PresentIdea();
+		claimRequest.setClaimerName("Test User");
+
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.body(claimRequest)
+			.post("ffffffff-ffff-ffff-ffff-ffffffffffff/claim")
+			.then()
+			.statusCode(404);
 	}
 }
