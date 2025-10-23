@@ -9,15 +9,7 @@ import io.quarkus.oidc.UserInfo;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.Consumes;
-import jakarta.ws.rs.DELETE;
-import jakarta.ws.rs.ForbiddenException;
-import jakarta.ws.rs.NotFoundException;
-import jakarta.ws.rs.POST;
-import jakarta.ws.rs.PUT;
-import jakarta.ws.rs.Path;
-import jakarta.ws.rs.PathParam;
-import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 
 import java.util.Optional;
@@ -80,17 +72,14 @@ public class PresentResource
 		wishListCheck(existingIdea);
 		presentIdeaRepository.delete(existingIdea);
 	}
-	
+
 	@DELETE
 	@Path("{id}/claim")
 	@Transactional
 	public PresentIdea unclaimPresentIdea(@PathParam("id") UUID id)
 	{
 		PresentIdea existingIdea = presentIdeaRepository.find("id", id).firstResult();
-		if (existingIdea == null)
-		{
-			throw new NotFoundException("Present idea not found");
-		}
+		wishListCheck(existingIdea);
 		existingIdea.setClaimerName(null);
 		existingIdea.setClaimed(false);
 		presentIdeaRepository.persist(existingIdea);

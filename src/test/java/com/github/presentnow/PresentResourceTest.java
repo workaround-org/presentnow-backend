@@ -26,9 +26,16 @@ public class PresentResourceTest
 	@BeforeAll
 	public static void setup()
 	{
+		String sub = "test-user";
+		String username = "Test User";
+		mockUserInfo(sub, username);
+	}
+
+	private static void mockUserInfo(String sub, String username)
+	{
 		UserInfo mock = Mockito.mock(UserInfo.class);
-		Mockito.when(mock.getSubject()).thenReturn("test-user");
-		Mockito.when(mock.getName()).thenReturn("Test User");
+		Mockito.when(mock.getSubject()).thenReturn(sub);
+		Mockito.when(mock.getName()).thenReturn(username);
 		QuarkusMock.installMockForType(mock, UserInfo.class);
 	}
 
@@ -122,6 +129,21 @@ public class PresentResourceTest
 			.statusCode(200)
 			.body("claimed", is(false))
 			.body("claimerName", is(nullValue()));
+	}
+
+	@Test
+	@TestTransaction
+	void unclaimPresentForbidden()
+	{
+		mockUserInfo("bob", "Bob");
+
+		// Now try unclaim it
+		given()
+			.when()
+			.contentType(ContentType.JSON)
+			.delete("33333333-3333-3333-3333-333333333333/claim")
+			.then()
+			.statusCode(403);
 	}
 
 	@Test
