@@ -16,12 +16,20 @@ public class GetFrontendConfigAction
 	@ConfigProperty(name = "quarkus.http.auth.policy.admin-policy.roles-allowed")
 	String adminRole;
 
+	@ConfigProperty(name = "com.github.presentnow.audience")
+	String audience;
+
+	@ConfigProperty(name = "com.github.presentnow.searchengine")
+	String searchEngine;
+
 	public FrontendConfig getFrontendConfig()
 	{
 		return new FrontendConfig(
 			authServerUrl,
 			authClientId,
-			adminRole
+			adminRole,
+			audience,
+			searchEngine
 		);
 	}
 }
