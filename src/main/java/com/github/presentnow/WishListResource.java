@@ -45,7 +45,6 @@ public class WishListResource
 	@GET
 	public List<ActiveWishList> getListsForUser()
 	{
-		// ToDo: Add Auth via Mail
 		return wishListRepository.getActive(getSub()).stream()
 			.map(ActiveWishList::new)
 			.toList();
