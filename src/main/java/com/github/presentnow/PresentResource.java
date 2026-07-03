@@ -1,11 +1,11 @@
 package com.github.presentnow;
 
 import com.github.presentnow.actions.PresentUpdateAction;
+import com.github.presentnow.auth.CurrentUser;
 import com.github.presentnow.db.PresentIdeaRepository;
 import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.PresentIdea;
 import com.github.presentnow.entity.WishList;
-import io.quarkus.oidc.UserInfo;
 import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
@@ -30,7 +30,7 @@ public class PresentResource
 	PresentUpdateAction presentUpdateAction;
 
 	@Inject
-	UserInfo userInfo;
+	CurrentUser currentUser;
 
 	@POST
 	@Transactional
@@ -53,7 +53,7 @@ public class PresentResource
 		boolean isNowClaimed = !existingIdea.isClaimed() && updatedIdea.isClaimed();
 		if (isNowClaimed)
 		{
-			updatedIdea.setClaimerName(userInfo.getName());
+			updatedIdea.setClaimerName(currentUser.getDisplayName());
 		}
 		boolean isNowUnclaimed = existingIdea.isClaimed() && !updatedIdea.isClaimed();
 		if (isNowUnclaimed)
@@ -97,7 +97,7 @@ public class PresentResource
 		{
 			throw new NotFoundException("List not found");
 		}
-		boolean isOwner = wishList.get().getUsername().equals(userInfo.getSubject());
+		boolean isOwner = wishList.get().getUsername().equals(currentUser.getSub());
 		if (!isOwner && !ConfigUtils.getProfiles().contains("dev"))
 		{
 			throw new ForbiddenException("You are not owner of this list");

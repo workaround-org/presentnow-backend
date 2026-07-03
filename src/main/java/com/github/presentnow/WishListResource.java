@@ -1,13 +1,12 @@
 package com.github.presentnow;
 
 import com.github.presentnow.actions.WishListUpdateAction;
+import com.github.presentnow.auth.CurrentUser;
 import com.github.presentnow.db.PresentIdeaRepository;
 import com.github.presentnow.db.WishListRepository;
 import com.github.presentnow.entity.ActiveWishList;
 import com.github.presentnow.entity.WishList;
 import com.github.presentnow.entity.WishListUpdate;
-import io.quarkus.oidc.UserInfo;
-import io.quarkus.runtime.configuration.ConfigUtils;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import jakarta.ws.rs.Consumes;
@@ -40,7 +39,7 @@ public class WishListResource
 	WishListUpdateAction wishListUpdateAction;
 
 	@Inject
-	UserInfo userInfo;
+	CurrentUser currentUser;
 
 	@GET
 	public List<ActiveWishList> getListsForUser()
@@ -92,22 +91,11 @@ public class WishListResource
 
 	private String getSub()
 	{
-		String name = userInfo.getName();
-		String username = userInfo.getSubject();
-		if (username == null && ConfigUtils.getProfiles().contains("dev"))
-		{
-			username = "test-user";
-		}
-		return username;
+		return currentUser.getSub();
 	}
 
 	private String getUsername()
 	{
-		String name = userInfo.getName();
-		if (name == null && ConfigUtils.getProfiles().contains("dev"))
-		{
-			name = "Test User";
-		}
-		return name;
+		return currentUser.getDisplayName();
 	}
 }
