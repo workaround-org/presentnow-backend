@@ -24,7 +24,7 @@ public class RequestMagicLinkAction
 {
 	private static final Pattern EMAIL_PATTERN = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
 	private static final int MAX_MAILS_PER_WINDOW = 3;
-	private static final SecureRandom RANDOM = new SecureRandom();
+	private final SecureRandom random = new SecureRandom();
 
 	@Inject
 	MagicLinkTokenRepository magicLinkTokenRepository;
@@ -57,7 +57,7 @@ public class RequestMagicLinkAction
 		}
 
 		byte[] tokenBytes = new byte[32];
-		RANDOM.nextBytes(tokenBytes);
+		random.nextBytes(tokenBytes);
 		String rawToken = Base64.getUrlEncoder().withoutPadding().encodeToString(tokenBytes);
 
 		MagicLinkToken token = new MagicLinkToken();
