@@ -29,6 +29,12 @@ VALUES ('t', 1779888096, 'aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa',
         'A collection of thoughtful gift ideas and presents desired for the birthday celebration, including both tangible items and memorable experiences!',
         'Birthday Gift Wishlist', 'test-user');
 --
+--  MagicLinkToken (seeded for MagicLinkFlowIT: hash of raw token 'native-it-magic-token-4XxUvxDbFyJ9')
+--
+INSERT INTO public.magiclinktoken (id, email, tokenhash, createdat, expiresat, used)
+VALUES ('cccccccc-cccc-cccc-cccc-cccccccccccc', 'seeded-it@example.com',
+        '136df862d01530e5af0dd1e8c9655ad4878ffbbd52cb353ca16f4ab2a13e6d45', 0, 32503680000000, false);
+--
 --  Sequence alter
 --
 -- alter sequence presentidea_seq restart with 6;
